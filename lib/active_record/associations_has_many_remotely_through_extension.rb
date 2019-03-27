@@ -20,8 +20,7 @@ module ActiveRecord
 
     module ClassMethods
       def has_many(name, scope = nil, **options, &extension)
-        if options.key?(:remotely_through)
-          options[:through] = options[:remotely_through]
+        if options.key?(:split)
           reflection = ActiveRecord::Associations::Builder::HasManyRemotelyThrough.build(self, name, scope, options, &extension)
           reflection = ActiveRecord::Reflection::RemotelyThroughReflection.new(reflection.send(:delegate_reflection))
           Reflection.add_reflection self, name, reflection

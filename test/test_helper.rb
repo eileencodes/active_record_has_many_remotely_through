@@ -13,7 +13,7 @@ class ShippingCompany < ActiveRecord::Base
 
   # in other databases
   has_many :docks
-  has_many :ships, remotely_through: :docks
+  has_many :ships, through: :docks, split: true
 end
 
 class Office < ActiveRecord::Base

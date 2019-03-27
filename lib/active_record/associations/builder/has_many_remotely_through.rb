@@ -3,7 +3,7 @@
 module ActiveRecord::Associations::Builder # :nodoc:
   class HasManyRemotelyThrough < HasMany #:nodoc:
     def self.valid_options(options)
-      super + [:remotely_through]
+      super + [:split]
     end
   end
 end
