@@ -2,7 +2,7 @@
 
 module ActiveRecord
   module Associations
-    class RemoteAssociationScope < AssociationScope
+    class SplitAssociationScope < AssociationScope
       def scope(association)
         reflection = association.reflection
         scope = association.klass.unscoped
@@ -21,9 +21,9 @@ module ActiveRecord
       end
     end
     # = Active Record Has Many Through Association
-    class HasManyRemotelyThroughAssociation < HasManyThroughAssociation #:nodoc:
+    class HasManySplitThroughAssociation < HasManyThroughAssociation #:nodoc:
       def find_target
-        RemoteAssociationScope.create.scope(self)
+        SplitAssociationScope.create.scope(self)
       end
     end
   end

@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ActiveRecordHasManyRemotelyThroughTest < Minitest::Test
+class ActiveRecordHasManySplitThroughTest < Minitest::Test
   def setup
     create_fixtures
   end
@@ -10,7 +10,7 @@ class ActiveRecordHasManyRemotelyThroughTest < Minitest::Test
   end
 
   def test_that_it_has_a_version_number
-    refute_nil ::ActiveRecordHasManyRemotelyThrough::VERSION
+    refute_nil ::ActiveRecordHasManySplitThrough::VERSION
   end
 
   def test_can_create_records
@@ -25,7 +25,7 @@ class ActiveRecordHasManyRemotelyThroughTest < Minitest::Test
     assert_equal 2, @company.employees.count
   end
 
-  def test_counting_through_remote_database
+  def test_counting_through_other_database
     skip "for now"
     assert_equal 1, @company.ships.count
   end
@@ -34,7 +34,7 @@ class ActiveRecordHasManyRemotelyThroughTest < Minitest::Test
     assert_equal @employee.id, @company.employees.first.id
   end
 
-  def test_fetching_through_remote_database
+  def test_fetching_through_other_database
     skip "for now"
     assert_equal @ship.id, @company.ships.first.id
   end
@@ -49,7 +49,7 @@ class ActiveRecordHasManyRemotelyThroughTest < Minitest::Test
     assert_equal [@employee, @employee2], @company.employees.sort.to_a
   end
 
-  def test_to_a_through_remote_database
+  def test_to_a_through_other_database
     assert_equal [@ship], @company.ships.to_a
   end
 
