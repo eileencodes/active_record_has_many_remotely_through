@@ -14,15 +14,15 @@ class ActiveRecordHasManyRemotelyThroughTest < Minitest::Test
   end
 
   def test_can_create_records
-    assert_equal 1, ShippingCompany.count
-    assert_equal 1, Office.count
-    assert_equal 1, Employee.count
+    assert_equal 2, ShippingCompany.count
+    assert_equal 3, Office.count
+    assert_equal 2, Employee.count
     assert_equal 1, Dock.count
     assert_equal 1, Ship.count
   end
 
   def test_counting_through_same_database
-    assert_equal 1, @company.employees.count
+    assert_equal 2, @company.employees.count
   end
 
   def test_counting_through_remote_database
@@ -45,17 +45,25 @@ class ActiveRecordHasManyRemotelyThroughTest < Minitest::Test
     assert_equal 2, @company.employees.reload.size
   end
 
-  def test_appending_through_remote_database
-    skip "for now"
+  def test_to_a_through_same_database
+    assert_equal [@employee, @employee2], @company.employees.sort.to_a
+  end
+
+  def test_to_a_through_remote_database
+    assert_equal [@ship], @company.ships.to_a
   end
 
   private
 
   def create_fixtures
-    @company = ShippingCompany.create!(name: "🛳")
+    @company = ShippingCompany.create!(name: "GitHub")
+    @company2 = ShippingCompany.create!(name: "Microsoft")
 
     @office = @company.offices.create!(name: "Back Office")
+    @office2 = @company.offices.create!(name: "Front Office")
+    @office3 = @company2.offices.create!(name: "Front Office")
     @employee = @office.employees.create!(name: "Alice")
+    @employee2 = @office2.employees.create!(name: "Not Alice")
 
     @dock = @company.docks.create!(name: "Primary")
     @ship = @dock.ships.create!(name: "Alton")
