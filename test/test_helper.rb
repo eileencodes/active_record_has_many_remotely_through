@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
-require "active_record_has_many_remotely_through"
+require "active_record_has_many_split_through"
 require "byebug"
 
 require "minitest/autorun"

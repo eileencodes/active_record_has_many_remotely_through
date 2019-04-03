@@ -1,4 +1,4 @@
-# HasManyRemotelyThrough association for ActiveRecord
+# HasManySplitThrough association for ActiveRecord
 
 Don't use joins 
 
@@ -7,7 +7,7 @@ Don't use joins
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'active_record_has_many_remotely_through', github: 'myobie/active_record_has_many_remotely_through'
+gem 'active_record_has_many_split_through', github: 'myobie/active_record_has_many_split_through'
 ```
 
 And then execute:
@@ -26,7 +26,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/myobie/active_record_has_many_remotely_through. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/myobie/active_record_has_many_split_through. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
@@ -34,4 +34,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the ActiveRecordHasManyRemotelyThrough project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/myobie/active_record_has_many_remotely_through/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the ActiveRecordHasManySplitThrough project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/myobie/active_record_has_many_split_through/blob/master/CODE_OF_CONDUCT.md).
