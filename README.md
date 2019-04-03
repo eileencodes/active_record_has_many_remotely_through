@@ -16,7 +16,20 @@ And then execute:
 
 ## Usage
 
-TODO
+Add `split: true` to your normal `has_many :something, through: :something_else` to avoid using joins. Maybe your tables are in different databases 😎
+
+Example from [`test/test_helper.rb`](test/test_helper.rb):
+
+```ruby
+class ShippingCompany < ActiveRecord::Base
+  has_many :offices
+  has_many :employees, through: :offices
+
+  # in other databases
+  has_many :docks
+  has_many :ships, through: :docks, split: true
+end
+```
 
 ## Development
 
