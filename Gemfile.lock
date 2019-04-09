@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     active_record_has_many_split_through (0.1.0)
-      activerecord (~> 5.2)
+      activerecord (>= 5.2, < 7)
 
 GEM
   remote: https://rubygems.org/
