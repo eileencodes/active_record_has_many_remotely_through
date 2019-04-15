@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Nathan Herald"]
   spec.email         = ["me@nathanherald.com"]
 
-  spec.summary       = %q{Support has_many :through accross seperate databases}
-  spec.description   = %q{Support has_many :through accross seperate databases}
+  spec.summary       = %q{Support has_many :through across seperate databases}
+  spec.description   = %q{Support has_many :through across seperate databases}
   spec.homepage      = "https://github.com/myobie/active_record_has_many_split_through"
   spec.license       = "MIT"
 
