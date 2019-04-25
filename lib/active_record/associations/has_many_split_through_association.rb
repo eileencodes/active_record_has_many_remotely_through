@@ -52,14 +52,46 @@ module ActiveRecord
       attr_accessor :select_values
     end
 
-    # = Active Record Has Many Through Association
-    class HasManySplitThroughAssociation < HasManyThroughAssociation #:nodoc:
-      def find_target
-        SplitAssociationScope.create.scope(self)
+    class CollectionProxyDelegate < DelegateClass(ActiveRecord::Associations::CollectionProxy)
+      def count
+        raise NotImplementedError
       end
 
-      def scope
-        ScopeProxy.new(self, target_scope, association_scope)
+      def pluck(*args)
+        raise NotImplementedError
+      end
+    end
+
+    # = Active Record Has Many Through Association
+    class HasManySplitThroughAssociation < HasManyThroughAssociation #:nodoc:
+      def reader
+        @proxy = Class.new(CollectionProxy.send(:relation_class_for, klass)) {
+          def pluck(*args)
+            SplitAssociationScope.create.scope(@association).pluck(*args)
+          end
+
+          def count
+            SplitAssociationScope.create.scope(@association).count
+          end
+
+          def first
+            SplitAssociationScope.create.scope(@association).first
+          end
+
+          def build(attributes = {}, &block)
+            m = method(__method__)
+            while m
+              p m.source_location
+              m = m.super_method
+            end
+            super
+          end
+        }.new(klass, self)
+        super
+      end
+
+      def find_target
+        SplitAssociationScope.create.scope(self)
       end
     end
   end

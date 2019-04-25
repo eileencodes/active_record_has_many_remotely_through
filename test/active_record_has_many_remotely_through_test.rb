@@ -37,10 +37,22 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     assert_equal @ship.id, @company.ships.first.id
   end
 
+  def assert_difference(thing)
+    before = thing.call
+    yield
+    assert_equal before + 1, thing.call
+  end
+
   def test_appending_through_same_database
-    skip "for now"
-    @company.employees << Employee.new(name: "Howard")
-    assert_equal 2, @company.employees.reload.size
+    assert_difference(->() { @company.employees.reload.size }) do
+      @office.employees.create(name: "howard")
+    end
+  end
+
+  def test_appending_through_other_database
+    assert_difference(->() { @company.ships.reload.size }) do
+      @dock.ships.create(name: "howard")
+    end
   end
 
   def test_to_a_through_same_database
