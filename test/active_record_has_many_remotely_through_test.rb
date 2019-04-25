@@ -26,7 +26,6 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
   end
 
   def test_counting_through_other_database
-    skip "for now"
     assert_equal 1, @company.ships.count
   end
 
@@ -35,7 +34,6 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
   end
 
   def test_fetching_through_other_database
-    skip "for now"
     assert_equal @ship.id, @company.ships.first.id
   end
 
@@ -51,6 +49,14 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
 
   def test_to_a_through_other_database
     assert_equal [@ship], @company.ships.to_a
+  end
+
+  def test_pluck_through_same_database
+    assert_equal Employee.all.pluck(:id), @company.employees.pluck(:id)
+  end
+
+  def test_pluck_through_other_database
+    assert_equal Ship.all.pluck(:id), @company.ships.pluck(:id)
   end
 
   private
