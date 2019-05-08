@@ -89,9 +89,9 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     Ship.connection.execute("delete from ships;")
   end
 
-  def assert_difference(thing)
-    before = thing.call
+  def assert_difference(record_count)
+    before = record_count.call
     yield
-    assert_equal before + 1, thing.call
+    assert_equal before + 1, record_count.call
   end
 end
