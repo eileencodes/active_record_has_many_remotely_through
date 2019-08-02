@@ -33,9 +33,6 @@ class ShippingCompany < A
   has_many :docks # B
   has_many :ships, through: :docks, split: true # B → C
   has_many :whistles, through: :ships, split: true # C → A
-  has_many :chairs, through: :ships, split: true  # C → C
-  has_many :chair_legs, through: :ships, split: true  # C → C → D
-  has_many :port_holes, through: :ships, split: true # C → D
 end
 
 class Office < A
@@ -61,20 +58,6 @@ class Ship < C
   has_many :whistles # A
   has_many :chairs # C
   has_many :chair_legs, through: :chairs
-  has_many :port_holes # D
-end
-
-class Chair < C
-  belongs_to :ship # C
-  has_many :chair_legs # D
-end
-
-class PortHole < D
-  belongs_to :ship # C
-end
-
-class ChairLeg < D
-  belongs_to :chair # C
 end
 
 require_relative "schema"

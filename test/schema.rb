@@ -27,15 +27,3 @@ C.connection.create_table :ships, force: true do |t|
   t.string :name
   t.references :dock
 end
-
-C.connection.create_table :chairs, force: true do |t|
-  t.references :ship
-end
-
-D.connection.create_table :port_holes, force: true do |t|
-  t.references :ship
-end
-
-D.connection.create_table :chair_legs, force: true do |t|
-  t.references :chair
-end

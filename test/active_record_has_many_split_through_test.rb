@@ -59,24 +59,12 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
 
   # through a through
 
-  def test_count_through_a_through_A_C_D
-    assert_equal 4, @company.port_holes.count
+  def test_pluck_through_a_through
+    assert_equal Whistle.where(ship: @ship).pluck(:id), @company.whistles.pluck(:id)
   end
 
-  def test_pluck_through_a_through_A_C_D
-    assert_equal PortHole.where(ship: @ship).pluck(:id), @company.port_holes.pluck(:id)
-  end
-
-  def test_count_through_a_through_A_C_A
+  def test_count_through_a_through
     assert_equal 3, @company.whistles.count
-  end
-
-  def test_count_through_a_through_A_C_C
-    assert_equal 2, @company.chairs.count
-  end
-
-  def test_count_through_a_through_A_C_C_D
-    assert_equal 5, @company.chair_legs.count
   end
 
   private
@@ -104,28 +92,6 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
 
     @ship2.whistles.create!()
     @ship2.whistles.create!()
-
-    @ship.port_holes.create!()
-    @ship.port_holes.create!()
-    @ship.port_holes.create!()
-    @ship.port_holes.create!()
-
-    @ship2.port_holes.create!()
-    @ship2.port_holes.create!()
-
-    @chair = @ship.chairs.create!()
-    @chair2 = @ship.chairs.create!()
-
-    @ship2.chairs.create!()
-    @ship2.chairs.create!()
-    @ship2.chairs.create!()
-
-    @chair.chair_legs.create!()
-    @chair.chair_legs.create!()
-    @chair.chair_legs.create!()
-
-    @chair2.chair_legs.create!()
-    @chair2.chair_legs.create!()
   end
 
   def remove_everything
@@ -134,7 +100,7 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     Employee.connection.execute("delete from employees;")
     Dock.connection.execute("delete from docks;")
     Ship.connection.execute("delete from ships;")
-    PortHole.connection.execute("delete from port_holes;")
+    Whistle.connection.execute("delete from whistles;")
   end
 
   def assert_difference(record_count)
