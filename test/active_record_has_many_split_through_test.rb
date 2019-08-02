@@ -13,14 +13,6 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     refute_nil ::ActiveRecordHasManySplitThrough::VERSION
   end
 
-  def test_can_create_records
-    assert_equal 2, ShippingCompany.count
-    assert_equal 3, Office.count
-    assert_equal 2, Employee.count
-    assert_equal 1, Dock.count
-    assert_equal 1, Ship.count
-  end
-
   def test_counting_through_same_database
     assert_equal 2, @company.employees.count
   end
@@ -62,7 +54,17 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
   end
 
   def test_pluck_through_other_database
-    assert_equal Ship.all.pluck(:id), @company.ships.pluck(:id)
+    assert_equal Ship.where(dock: @dock).pluck(:id), @company.ships.pluck(:id)
+  end
+
+  # through a through
+
+  def test_pluck_through_a_through
+    assert_equal Whistle.where(ship: @ship).pluck(:id), @company.whistles.pluck(:id)
+  end
+
+  def test_count_through_a_through
+    assert_equal 3, @company.whistles.count
   end
 
   private
@@ -74,11 +76,22 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     @office = @company.offices.create!(name: "Back Office")
     @office2 = @company.offices.create!(name: "Front Office")
     @office3 = @company2.offices.create!(name: "Front Office")
+
     @employee = @office.employees.create!(name: "Alice")
     @employee2 = @office2.employees.create!(name: "Not Alice")
 
     @dock = @company.docks.create!(name: "Primary")
+    @dock2 = @company2.docks.create!(name: "Primary")
+
     @ship = @dock.ships.create!(name: "Alton")
+    @ship2 = @dock2.ships.create!(name: "Not Alton")
+
+    @ship.whistles.create!()
+    @ship.whistles.create!()
+    @ship.whistles.create!()
+
+    @ship2.whistles.create!()
+    @ship2.whistles.create!()
   end
 
   def remove_everything
@@ -87,6 +100,7 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     Employee.connection.execute("delete from employees;")
     Dock.connection.execute("delete from docks;")
     Ship.connection.execute("delete from ships;")
+    Whistle.connection.execute("delete from whistles;")
   end
 
   def assert_difference(record_count)
