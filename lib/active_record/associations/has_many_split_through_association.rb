@@ -14,18 +14,20 @@ module ActiveRecord
 
         reverse_chain = chain.reverse
         last_reflection = reverse_chain.last
-        reverse_chain.each do |refl|
-          records = refl.klass.unscoped.where(refl.join_keys.key => join_ids)
+
+        m = reverse_chain.inject do |acc, refl|
+          records = acc.klass.unscoped.where(acc.join_keys.key => join_ids)
           # Preventing the reflection from being loaded on the
           # last reflection in the chain, that way anything the user
           # wants to apply to the reflection will still work.
-          if refl != last_reflection
-            records = records.select(:id)
-            join_ids = records.map(&:id)
-          end
+          records = records.select(refl.join_keys.foreign_key)
+          join_ids = records.map { |x|
+            x[refl.join_keys.foreign_key]
+          }
+          refl
         end
 
-        records
+        m.klass.unscoped.where(m.join_keys.key => join_ids)
       end
     end
 
