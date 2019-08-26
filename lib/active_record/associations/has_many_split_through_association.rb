@@ -9,19 +9,19 @@ module ActiveRecord
 
         chain = get_chain(reflection, association, scope.alias_tracker)
 
-        join_ids = [association.owner.id]
+        reverse_chain = chain.reverse
+        first_refl = reverse_chain.shift
+        first_join_ids = [association.owner.id]
 
-        m = chain.reverse.inject do |acc, refl|
-          records = acc.klass.unscoped.where(acc.join_keys.key => join_ids)
+        last_refl, last_join_ids = reverse_chain.inject([first_refl, first_join_ids]) do |(prev_refl, prev_join_ids), next_refl|
+          records = prev_refl.klass.unscoped.where(prev_refl.join_keys.key => prev_join_ids)
           # Preventing the reflection from being loaded on the
           # last reflection in the chain, that way anything the user
           # wants to apply to the reflection will still work.
-          join_ids = records.pluck(refl.join_keys.foreign_key)
-
-          refl
+          [next_refl, records.pluck(next_refl.join_keys.foreign_key)]
         end
 
-        m.klass.unscoped.where(m.join_keys.key => join_ids)
+        last_refl.klass.unscoped.where(last_refl.join_keys.key => last_join_ids)
       end
     end
 
