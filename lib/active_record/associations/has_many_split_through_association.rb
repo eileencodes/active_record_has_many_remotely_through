@@ -5,11 +5,11 @@ module ActiveRecord
     class SplitAssociationScope < AssociationScope
       def scope(association)
         # source of the through reflection
-        reflection = association.reflection
+        source_reflection = association.reflection
         #remove all previously set scope of passed in association
         scope = association.klass.unscoped
 
-        chain = get_chain(reflection, association, scope.alias_tracker)
+        chain = get_chain(source_reflection, association, scope.alias_tracker)
 
         reverse_chain = chain.reverse
         first_reflection = reverse_chain.shift
