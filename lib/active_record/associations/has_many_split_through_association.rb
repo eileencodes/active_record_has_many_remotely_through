@@ -16,7 +16,7 @@ module ActiveRecord
         first_join_ids = [association.owner.id]
         initial_values = [first_reflection, first_join_ids]
 
-        last_reflection, join_ids = reverse_chain.inject(initial_values) do |(reflection, join_ids), next_reflection|
+        last_reflection, last_join_ids = reverse_chain.inject(initial_values) do |(reflection, join_ids), next_reflection|
           key = reflection.join_keys.key
           records = reflection.klass.where(key => join_ids)
 
@@ -28,7 +28,7 @@ module ActiveRecord
         end
 
         key = last_reflection.join_keys.key
-        last_reflection.klass.where(key => join_ids)
+        last_reflection.klass.where(key => last_join_ids)
       end
     end
 
