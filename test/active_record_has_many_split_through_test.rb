@@ -49,6 +49,10 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     assert_equal [@ship], @company.ships.to_a
   end
 
+  def test_empty_through_other_database
+    assert_equal [], @company3.whistles
+  end
+
   def test_pluck_through_same_database
     assert_equal Employee.all.pluck(:id), @company.employees.pluck(:id)
   end
@@ -72,6 +76,7 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
   def create_fixtures
     @company = ShippingCompany.create!(name: "GitHub")
     @company2 = ShippingCompany.create!(name: "Microsoft")
+    @company3 = ShippingCompany.create!(name: "Wunderlist")
 
     @office = @company.offices.create!(name: "Back Office")
     @office2 = @company.offices.create!(name: "Front Office")

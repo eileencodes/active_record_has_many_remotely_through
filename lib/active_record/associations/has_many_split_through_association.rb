@@ -34,9 +34,13 @@ module ActiveRecord
           [next_reflection, record_ids]
         end
 
-        key = last_reflection.join_keys.key
-        where_sql = ActiveRecord::Base.sanitize_sql(["#{key} IN (?)", last_join_ids])
-        last_reflection.klass.where(where_sql)
+        if last_join_ids.present?
+          key = last_reflection.join_keys.key
+          where_sql = ActiveRecord::Base.sanitize_sql(["#{key} IN (?)", last_join_ids])
+          last_reflection.klass.where(where_sql)
+        else
+          last_reflection.klass.none
+        end
       end
     end
 
