@@ -18,7 +18,8 @@ module ActiveRecord
 
         last_reflection, last_join_ids = reverse_chain.inject(initial_values) do |(reflection, join_ids), next_reflection|
           key = reflection.join_keys.key
-          records = reflection.klass.where(key => join_ids)
+          where_sql = ActiveRecord::Base.sanitize_sql(["#{key} IN (?)", join_ids])
+          records = reflection.klass.where(where_sql)
 
           # Preventing the reflection from being loaded on the
           # last reflection in the chain, that way anything the user
