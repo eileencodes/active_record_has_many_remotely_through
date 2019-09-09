@@ -27,3 +27,8 @@ C.connection.create_table :ships, force: true do |t|
   t.string :name
   t.references :dock
 end
+
+D.connection.create_table :containers, id: false, force: true do |t|
+  t.primary_key :registration_number
+  t.references :dock
+end
