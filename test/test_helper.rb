@@ -51,13 +51,21 @@ end
 class Dock < B
   belongs_to :shipping_company # A
   has_many :ships # C
+  has_many :containers # D
 end
 
 class Ship < C
   belongs_to :dock # B
   has_many :whistles # A
-  has_many :chairs # C
-  has_many :chair_legs, through: :chairs
+  has_many :containers,
+    foreign_key: "container_registration_number_id",
+    through: :dock,
+    split: true # C → D
+end
+
+class Container < D
+  self.primary_key = "registration_number"
+  belongs_to :dock # C
 end
 
 require_relative "schema"
