@@ -33,6 +33,7 @@ class ShippingCompany < A
   has_many :docks # B
   has_many :ships, through: :docks, split: true # B → C
   has_many :whistles, through: :ships, split: true # C → A
+  has_many :containers, through: :docks, split: true # B → D
 end
 
 class Office < A
@@ -60,12 +61,12 @@ class Ship < C
   has_many :containers,
     foreign_key: "container_registration_number_id",
     through: :dock,
-    split: true # C → D
+    split: true # B → D
 end
 
 class Container < D
   self.primary_key = "registration_number"
-  belongs_to :dock # C
+  belongs_to :dock # B
 end
 
 require_relative "schema"

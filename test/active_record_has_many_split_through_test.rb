@@ -21,8 +21,8 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     assert_equal 1, @company.ships.count
   end
 
-  def test_coutning_through_other_database_using_custom_foreign_key
-    assert_equal 3, @ship.containers.count
+  def test_counting_through_other_database_using_custom_foreign_key
+    assert_equal 3, @company.containers.count
   end
 
   def test_fetching_through_same_database
@@ -34,7 +34,7 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
   end
 
   def test_fetching_through_other_database_using_custom_foreign_key
-    assert_equal @container1.id, @dock.ships.first.id
+    assert_equal @container1.id, @company.containers.first.id
   end
 
   def test_appending_through_same_database
@@ -50,7 +50,7 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
   end
 
   def test_appending_through_other_database_using_custom_foreign_key
-    assert_difference(->() { @ship.containers.reload.size }) do
+    assert_difference(->() { @company.containers.reload.size }) do
       @dock.containers.create()
     end
   end
@@ -64,7 +64,7 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
   end
 
   def test_to_a_through_other_database_using_custom_foreign_key
-    assert_equal [@container1, @container2, @container3], @dock.containers.to_a
+    assert_equal [@container1, @container2, @container3], @company.containers.to_a
   end
 
   def test_empty_through_other_database
@@ -72,7 +72,7 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
   end
 
   def test_empty_through_other_database_using_custom_foreign_key
-    assert_equal [], @dock2.containers
+    assert_equal [], @company2.containers
   end
 
   def test_pluck_through_same_database
@@ -85,7 +85,7 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
 
   def test_pluck_through_other_database_using_custom_foreign_key
     assert_equal Container.where(dock: @dock).pluck(:registration_number),
-      @ship.containers.pluck(:registration_number)
+      @company.containers.pluck(:registration_number)
   end
 
   # through a through
