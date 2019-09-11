@@ -21,12 +21,20 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     assert_equal 1, @company.ships.count
   end
 
+  def test_counting_through_other_database_using_custom_foreign_key
+    assert_equal 3, @company.containers.count
+  end
+
   def test_fetching_through_same_database
     assert_equal @employee.id, @company.employees.first.id
   end
 
   def test_fetching_through_other_database
     assert_equal @ship.id, @company.ships.first.id
+  end
+
+  def test_fetching_through_other_database_using_custom_foreign_key
+    assert_equal @container1.id, @company.containers.first.id
   end
 
   def test_appending_through_same_database
@@ -41,6 +49,12 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     end
   end
 
+  def test_appending_through_other_database_using_custom_foreign_key
+    assert_difference(->() { @company.containers.reload.size }) do
+      @dock.containers.create()
+    end
+  end
+
   def test_to_a_through_same_database
     assert_equal [@employee, @employee2], @company.employees.sort.to_a
   end
@@ -49,12 +63,29 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     assert_equal [@ship], @company.ships.to_a
   end
 
+  def test_to_a_through_other_database_using_custom_foreign_key
+    assert_equal [@container1, @container2, @container3], @company.containers.to_a
+  end
+
+  def test_empty_through_other_database
+    assert_equal [], @company3.whistles
+  end
+
+  def test_empty_through_other_database_using_custom_foreign_key
+    assert_equal [], @company2.containers
+  end
+
   def test_pluck_through_same_database
     assert_equal Employee.all.pluck(:id), @company.employees.pluck(:id)
   end
 
   def test_pluck_through_other_database
     assert_equal Ship.where(dock: @dock).pluck(:id), @company.ships.pluck(:id)
+  end
+
+  def test_pluck_through_other_database_using_custom_foreign_key
+    assert_equal Container.where(dock: @dock).pluck(:registration_number),
+      @company.containers.pluck(:registration_number)
   end
 
   # through a through
@@ -72,6 +103,7 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
   def create_fixtures
     @company = ShippingCompany.create!(name: "GitHub")
     @company2 = ShippingCompany.create!(name: "Microsoft")
+    @company3 = ShippingCompany.create!(name: "Wunderlist")
 
     @office = @company.offices.create!(name: "Back Office")
     @office2 = @company.offices.create!(name: "Front Office")
@@ -82,6 +114,10 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
 
     @dock = @company.docks.create!(name: "Primary")
     @dock2 = @company2.docks.create!(name: "Primary")
+
+    @container1 = @dock.containers.create!()
+    @container2 = @dock.containers.create!()
+    @container3 = @dock.containers.create!()
 
     @ship = @dock.ships.create!(name: "Alton")
     @ship2 = @dock2.ships.create!(name: "Not Alton")
@@ -101,6 +137,7 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     Dock.connection.execute("delete from docks;")
     Ship.connection.execute("delete from ships;")
     Whistle.connection.execute("delete from whistles;")
+    Container.connection.execute("delete from containers;")
   end
 
   def assert_difference(record_count)
