@@ -44,7 +44,7 @@ end
 class Employee < A
   belongs_to :office # A
   has_many :favorites
-  
+
   has_many :favorite_ships,
     through: :favorites,
     source: :favoritable,
