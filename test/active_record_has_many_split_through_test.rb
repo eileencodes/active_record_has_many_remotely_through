@@ -12,6 +12,10 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
   def test_that_it_has_a_version_number
     refute_nil ::ActiveRecordHasManySplitThrough::VERSION
   end
+  
+  def test_employee_has_one_favorite_ship
+    assert_equal 1, @employee.favorite_ships.count
+  end
 
   def test_counting_through_same_database
     assert_equal 2, @company.employees.count
@@ -128,6 +132,10 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
 
     @ship2.whistles.create!()
     @ship2.whistles.create!()
+    
+    @favorite_ship = Favorite.create!(employee: @employee, favoritable: @ship2)
+    @favorite_dock = Favorite.create!(employee: @employee, favoritable: @dock)
+    @decoy_ship = Ship.where(id: @favorite_dock.id).first_or_create
   end
 
   def remove_everything
