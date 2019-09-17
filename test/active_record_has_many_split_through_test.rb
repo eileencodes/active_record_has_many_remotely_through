@@ -13,6 +13,12 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     refute_nil ::ActiveRecordHasManySplitThrough::VERSION
   end
 
+  def test_employee_has_one_favorite_ship
+    assert_equal 1, @employee.favorite_ships.count
+    assert_includes @employee.favorite_ships, @ship2
+    refute_includes @employee.favorite_ships, @dock
+  end
+
   def test_counting_through_same_database
     assert_equal 2, @company.employees.count
   end
@@ -128,6 +134,10 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
 
     @ship2.whistles.create!()
     @ship2.whistles.create!()
+
+    @favorite_ship = Favorite.create!(employee: @employee, favoritable: @ship2)
+    @favorite_dock = Favorite.create!(employee: @employee, favoritable: @dock)
+    @decoy_ship = Ship.where(id: @favorite_dock.id).first_or_create
   end
 
   def remove_everything
@@ -138,6 +148,7 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     Ship.connection.execute("delete from ships;")
     Whistle.connection.execute("delete from whistles;")
     Container.connection.execute("delete from containers;")
+    Favorite.connection.execute("delete from favorites;")
   end
 
   def assert_difference(record_count)

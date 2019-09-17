@@ -43,6 +43,13 @@ end
 
 class Employee < A
   belongs_to :office # A
+  has_many :favorites
+
+  has_many :favorite_ships,
+    through: :favorites,
+    source: :favoritable,
+    source_type: "Ship",
+    split: true
 end
 
 class Whistle < A
@@ -53,11 +60,18 @@ class Dock < B
   belongs_to :shipping_company # A
   has_many :ships # C
   has_many :containers # D
+  has_many :favorites, as: :favoritable #B
+end
+
+class Favorite < B
+  belongs_to :employee
+  belongs_to :favoritable, polymorphic: true
 end
 
 class Ship < C
   belongs_to :dock # B
   has_many :whistles # A
+  has_many :favorites, as: :favoritable #B
   has_many :containers,
     foreign_key: "container_registration_number_id",
     through: :dock,

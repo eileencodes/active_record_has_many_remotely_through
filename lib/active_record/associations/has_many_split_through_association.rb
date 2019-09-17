@@ -6,6 +6,8 @@ module ActiveRecord
       def scope(association)
         # source of the through reflection
         source_reflection = association.reflection
+        options = source_reflection.options
+
         # remove all previously set scopes of passed in association
         scope = association.klass.unscoped
 
@@ -23,8 +25,18 @@ module ActiveRecord
           # "WHERE key IN ()" is invalid SQL and will happen if join_ids is empty,
           # so we gotta catch it here in ruby
           record_ids = if join_ids.present?
+
             where_sql = ActiveRecord::Base.sanitize_sql(["#{key} IN (?)", join_ids])
             records = reflection.klass.where(where_sql)
+
+            if options[:source_type]
+              table = reflection.aliased_table
+              type = "#{options[:source]}_type"
+              polymorphic_type = transform_value(options[:source_type])
+
+              records = apply_scope(records, table, type, polymorphic_type)
+            end
+
             foreign_key = next_reflection.join_keys.foreign_key
             records.pluck(foreign_key)
           else
