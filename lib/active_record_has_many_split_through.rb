@@ -6,4 +6,4 @@ module ActiveRecordHasManySplitThrough
   class Error < StandardError; end
 end
 
-ActiveRecord::Base.include ActiveRecord::AssociationsHasManySplitThroughExtension
+ActiveRecord::Base.include(ActiveRecord::AssociationsHasManySplitThroughExtension)
