@@ -54,14 +54,6 @@ module ActiveRecord
           last_reflection.klass.none
         end
       end
-
-      def apply_scope(scope, table, key, value)
-        if scope.table == table
-          scope.where!(key => value)
-        else
-          scope.where!(table.name => { key => value })
-        end
-      end
     end
 
     # = Active Record Has Many Through Association
