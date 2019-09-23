@@ -65,6 +65,12 @@ class Employee < A
     source: :favoritable,
     source_type: "Ship",
     split: !NO_SPLIT
+
+  has_many :favorite_docks,
+    through: :favorites,
+    source: :favoritable,
+    source_type: "Dock",
+    split: !NO_SPLIT
 end
 
 class Whistle < A

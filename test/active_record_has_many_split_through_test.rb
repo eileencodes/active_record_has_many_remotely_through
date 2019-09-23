@@ -114,6 +114,13 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     assert_equal [@broken_whistle2, @broken_whistle1], @company.broken_whistles.to_a
   end
 
+  # through test with polymorphic relations
+
+  def test_employee_has_favorites
+    assert_equal [@ship], @employee.favorite_ships
+    assert_equal [@dock, @dock2], @employee.favorite_docks
+  end
+
   private
 
   def create_fixtures
@@ -148,10 +155,9 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
     @ship2.whistles.create!()
     @broken_whistle3 = @ship2.whistles.create!(broken: true)
 
-
-    @favorite_ship = Favorite.create!(employee: @employee, favoritable: @ship2)
-    @favorite_dock = Favorite.create!(employee: @employee, favoritable: @dock)
-    @decoy_ship = Ship.where(id: @favorite_dock.id).first_or_create
+    @employee.favorite_ships << @ship2
+    @employee.favorite_docks << @dock
+    @employee.favorite_docks << @dock2
   end
 
   def remove_everything

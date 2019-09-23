@@ -25,9 +25,8 @@ B.connection.create_table :docks, force: true do |t|
 end
 
 B.connection.create_table :favorites, force: true do |t|
-  t.integer :favoritable_id
-  t.integer :employee_id
-  t.string  :favoritable_type
+  t.references :favoritable, polymorphic: true
+  t.references :employee
 end
 
 C.connection.create_table :ships, force: true do |t|
