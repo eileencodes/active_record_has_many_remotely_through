@@ -34,6 +34,12 @@ class ShippingCompany < A
   has_many :ships, through: :docks, split: true # B → C
   has_many :whistles, through: :ships, split: true # C → A
   has_many :containers, through: :docks, split: true # B → D
+
+  has_many :broken_whistles,
+     -> { where(broken: true).order(id: :desc) },
+     through: :ships,
+     source: :whistles,
+     split: true # C → A
 end
 
 class Office < A
