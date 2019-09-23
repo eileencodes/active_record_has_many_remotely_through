@@ -15,6 +15,7 @@ A.connection.create_table :employees, force: true do |t|
 end
 
 A.connection.create_table :whistles, force: true do |t|
+  t.boolean :broken, default: false
   t.references :ship
 end
 
