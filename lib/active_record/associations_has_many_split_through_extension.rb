@@ -20,11 +20,12 @@ module ActiveRecord
 
     module ClassMethods
       def has_many(name, scope = nil, **options, &extension)
-        if options.key?(:split)
+        if options.key?(:split) && options[:split]
           reflection = ActiveRecord::Associations::Builder::HasManySplitThrough.build(self, name, scope, options, &extension)
           reflection = ActiveRecord::Reflection::SplitThroughReflection.new(reflection.send(:delegate_reflection))
           Reflection.add_reflection self, name, reflection
         else
+          options.delete :split
           super
         end
       end

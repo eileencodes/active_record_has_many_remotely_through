@@ -1,11 +1,11 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require "active_record_has_many_split_through"
-require "byebug"
-
 require "minitest/autorun"
 
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
 ActiveRecord::Schema.verbose = false
+
+NO_SPLIT = ENV['NO_SPLIT']
 
 class A < ActiveRecord::Base
   self.abstract_class = true
@@ -13,17 +13,26 @@ end
 
 class B < ActiveRecord:: Base
   self.abstract_class = true
-  establish_connection(adapter: 'sqlite3', database: ':memory:')
+
+  unless NO_SPLIT
+    establish_connection(adapter: 'sqlite3', database: ':memory:')
+  end
 end
 
 class C < ActiveRecord:: Base
   self.abstract_class = true
-  establish_connection(adapter: 'sqlite3', database: ':memory:')
+
+  unless NO_SPLIT
+    establish_connection(adapter: 'sqlite3', database: ':memory:')
+  end
 end
 
 class D < ActiveRecord:: Base
   self.abstract_class = true
-  establish_connection(adapter: 'sqlite3', database: ':memory:')
+
+  unless NO_SPLIT
+    establish_connection(adapter: 'sqlite3', database: ':memory:')
+  end
 end
 
 class ShippingCompany < A
@@ -31,9 +40,9 @@ class ShippingCompany < A
   has_many :employees, through: :offices # A → A
 
   has_many :docks # B
-  has_many :ships, through: :docks, split: true # B → C
-  has_many :whistles, through: :ships, split: true # C → A
-  has_many :containers, through: :docks, split: true # B → D
+  has_many :ships, through: :docks, split: !NO_SPLIT  # B → C
+  has_many :whistles, through: :ships, split: !NO_SPLIT  # C → A
+  has_many :containers, through: :docks, split: !NO_SPLIT  # B → D
 end
 
 class Office < A
@@ -49,7 +58,7 @@ class Employee < A
     through: :favorites,
     source: :favoritable,
     source_type: "Ship",
-    split: true
+    split: !NO_SPLIT
 end
 
 class Whistle < A
@@ -75,7 +84,7 @@ class Ship < C
   has_many :containers,
     foreign_key: "container_registration_number_id",
     through: :dock,
-    split: true # B → D
+    split: !NO_SPLIT # B → D
 end
 
 class Container < D
