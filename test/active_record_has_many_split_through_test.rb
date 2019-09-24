@@ -112,6 +112,12 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
 
   def test_to_a_through_other_database_with_multiple_scopes
     assert_equal [@broken_whistle2, @broken_whistle1], @company.broken_whistles.to_a
+    whistles = @company.broken_whistles.to_a
+    whistles.each do |w|
+      p [w.class, w.id]
+      p [w.ship.class, w.ship.id]
+      p [w.ship.dock.class, w.ship.dock.id]
+    end
   end
 
   # through test with polymorphic relations

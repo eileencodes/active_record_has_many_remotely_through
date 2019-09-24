@@ -5,6 +5,7 @@ require "minitest/autorun"
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
 ActiveRecord::Schema.verbose = false
 
+#ActiveRecord::Base.logger = Logger.new($stderr)
 NO_SPLIT = ENV['NO_SPLIT']
 
 class A < ActiveRecord::Base
