@@ -63,7 +63,7 @@ module ActiveRecord
       end
 
       def find_target
-        scope
+        scope.to_a
       end
     end
   end
