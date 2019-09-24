@@ -19,8 +19,12 @@ jobs:
     - name: Install SQLite3 Libraries
       run: |
         sudo apt-get install sqlite3 libsqlite3-dev
-    - name: Build and test with Rake
+    - name: Install Gel
       run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-        bundle exec rake ${{ matrix.task }}
+        gem install gel
+    - name: Install Gems
+      run: |
+        gel install
+    - name: Run tests
+      run: |
+        gel exec rake ${{ matrix.task }}
