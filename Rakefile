@@ -1,4 +1,9 @@
-require "bundler/gem_tasks"
+begin
+  require "bundler/gem_tasks"
+rescue TypeError, NameError
+  # Probably using gel
+end
+
 require "rake/testtask"
 
 Rake::TestTask.new(:test_with_split) do |t|
