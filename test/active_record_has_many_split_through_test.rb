@@ -117,7 +117,7 @@ class ActiveRecordHasManySplitThroughTest < Minitest::Test
   # through test with polymorphic relations
 
   def test_employee_has_favorites
-    assert_equal [@ship], @employee.favorite_ships
+    assert_equal [@ship2], @employee.favorite_ships
     assert_equal [@dock, @dock2], @employee.favorite_docks
   end
 
