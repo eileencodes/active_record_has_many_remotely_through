@@ -25,9 +25,7 @@ module ActiveRecord
           # "WHERE key IN ()" is invalid SQL and will happen if join_ids is empty,
           # so we gotta catch it here in ruby
           record_ids = if join_ids.present?
-
-            where_sql = ActiveRecord::Base.sanitize_sql(["#{key} IN (?)", join_ids])
-            records = reflection.klass.where(where_sql)
+            records = add_reflection_constraints(reflection, key, join_ids, association.owner)
 
             if options[:source_type]
               table = reflection.aliased_table
@@ -48,12 +46,28 @@ module ActiveRecord
 
         if last_join_ids.present?
           key = last_reflection.join_keys.key
-          where_sql = ActiveRecord::Base.sanitize_sql(["#{key} IN (?)", last_join_ids])
-          last_reflection.klass.where(where_sql)
+
+          add_reflection_constraints(last_reflection, key, last_join_ids, association.owner)
         else
           last_reflection.klass.none
         end
       end
+
+      private
+        def select_reflection_constraints(reflection, scope_chain_item, owner, scope)
+          item = eval_scope(reflection, scope_chain_item, owner)
+          scope.unscope!(*item.unscope_values)
+          scope.where_clause += item.where_clause
+          scope.order_values = item.order_values | scope.order_values
+          scope
+        end
+
+        def add_reflection_constraints(reflection, key, join_ids, owner)
+          scope = reflection.klass.where(key => join_ids)
+          reflection.constraints.inject(scope) do |memo, scope_chain_item|
+            select_reflection_constraints(reflection, scope_chain_item, owner, memo)
+          end
+        end
     end
 
     # = Active Record Has Many Through Association
