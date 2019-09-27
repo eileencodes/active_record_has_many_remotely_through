@@ -3,6 +3,14 @@
 module ActiveRecord
   module Associations
     class SplitAssociationScope < AssociationScope
+      def add_reflection_constraints(reflection, scope_chain_item, owner, scope)
+        item = eval_scope(reflection, scope_chain_item, owner)
+        scope.unscope!(*item.unscope_values)
+        scope.where_clause += item.where_clause
+        scope.order_values = item.order_values | scope.order_values
+        scope
+      end
+
       def scope(association)
         # source of the through reflection
         source_reflection = association.reflection
@@ -27,7 +35,12 @@ module ActiveRecord
           record_ids = if join_ids.present?
 
             where_sql = ActiveRecord::Base.sanitize_sql(["#{key} IN (?)", join_ids])
-            records = reflection.klass.where(where_sql)
+            _scope = reflection.klass.where(where_sql)
+            reflection.constraints.each do |scope_chain_item|
+              _scope = add_reflection_constraints(reflection, scope_chain_item, association.owner, _scope)
+            end
+            records = _scope
+
 
             if options[:source_type]
               table = reflection.aliased_table
@@ -49,7 +62,13 @@ module ActiveRecord
         if last_join_ids.present?
           key = last_reflection.join_keys.key
           where_sql = ActiveRecord::Base.sanitize_sql(["#{key} IN (?)", last_join_ids])
-          last_reflection.klass.where(where_sql)
+
+          _scope = last_reflection.klass.where(where_sql)
+
+          last_reflection.constraints.each do |scope_chain_item|
+            _scope = add_reflection_constraints(last_reflection, scope_chain_item, association.owner, _scope)
+          end
+          _scope
         else
           last_reflection.klass.none
         end
